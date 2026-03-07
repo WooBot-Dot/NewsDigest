@@ -35,7 +35,7 @@ jobs:
           git add newsletters/news/*.md newsletters/news/*.html newsletters/index.json || true
           if ! git diff --staged --quiet; then
             git commit -m "Daily digest: $(date -u +%Y-%m-%d)"
-            git remote set-url origin https://x-access-token:${{ secrets.NEWSLETTER_PAT }}@github.com/WooBot-Dot/NewsDigest.git
+            git remote set-url origin https://x-access-token:${{ secrets.newsletter-deploy }}@github.com/WooBot-Dot/NewsDigest.git
             git push origin HEAD:main
           else
             echo "No changes to commit"
