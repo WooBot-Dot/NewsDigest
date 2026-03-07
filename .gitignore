@@ -4,10 +4,9 @@
 # Keep the gitignore file itself
 !.gitignore
 
-# Unignore only the newsletters/news folder and its contents
+# Unignore the entire newsletters folder and its contents
 !newsletters/
-!newsletters/news/
-!newsletters/news/**
+!newsletters/**
 
 # Optionally keep .git folder
 !.git/
