@@ -1,0 +1,42 @@
+name: Daily Norway Digest
+
+on:
+  schedule:
+    # Run daily at 09:00 UTC which corresponds to 10:00 CET (note: shifts with DST)
+    - cron: '09 00 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run fetcher
+        run: python newsletters/fetcher.py
+        env:
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
+
+      - name: Commit and push outputs using PAT
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add newsletters/news/*.md newsletters/news/*.html newsletters/index.json || true
+          if ! git diff --staged --quiet; then
+            git commit -m "Daily digest: $(date -u +%Y-%m-%d)"
+            git remote set-url origin https://x-access-token:${{ secrets.NEWSLETTER_PAT }}@github.com/WooBot-Dot/NewsDigest.git
+            git push origin HEAD:main
+          else
+            echo "No changes to commit"
+          fi
