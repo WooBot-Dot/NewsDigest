@@ -11,3 +11,8 @@
 
 # Optionally keep .git folder
 !.git/
+
+# Keep GitHub workflow file tracked
+!.github/
+!.github/workflows/
+!.github/workflows/digest.yml
